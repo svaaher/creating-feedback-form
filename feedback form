@@ -1,0 +1,43 @@
+Imports System.Data.SqlClient
+
+Public Class FeedbackForm
+    Private Sub SubmitButton_Click(sender As Object, e As EventArgs) Handles SubmitButton.Click
+        Dim name As String = NameTextBox.Text
+        Dim address As String = AddressTextBox.Text
+        Dim mobileNumber As String = MobileNumberTextBox.Text
+        Dim email As String = EmailTextBox.Text
+        Dim dateOfBirth As Date = DateOfBirthDateTimePicker.Value
+
+        ' Create a connection string to your SQL Server.
+        Dim connectionString As String = "Data Source=YourServer;Initial Catalog=YourDatabase;Integrated Security=True"
+
+        ' Use a SQLConnection to open a connection to your database.
+        Using connection As New SqlConnection(connectionString)
+            connection.Open()
+
+            ' Define your SQL INSERT statement.
+            Dim sqlInsert As String = "INSERT INTO Feedback (Name, Address, MobileNumber, Email, DateOfBirth) VALUES (@Name, @Address, @MobileNumber, @Email, @DateOfBirth)"
+
+            ' Use a SQLCommand to execute the INSERT statement.
+            Using cmd As New SqlCommand(sqlInsert, connection)
+                cmd.Parameters.AddWithValue("@Name", name)
+                cmd.Parameters.AddWithValue("@Address", address)
+                cmd.Parameters.AddWithValue("@MobileNumber", mobileNumber)
+                cmd.Parameters.AddWithValue("@Email", email)
+                cmd.Parameters.AddWithValue("@DateOfBirth", dateOfBirth)
+
+                ' Execute the INSERT statement.
+                cmd.ExecuteNonQuery()
+            End Using
+        End Using
+
+        MessageBox.Show("Feedback submitted successfully.")
+
+        ' Optionally, clear the input fields after submission.
+        NameTextBox.Clear()
+        AddressTextBox.Clear()
+        MobileNumberTextBox.Clear()
+        EmailTextBox.Clear()
+        DateOfBirthDateTimePicker.Value = Date.Now
+    End Sub
+End Class
